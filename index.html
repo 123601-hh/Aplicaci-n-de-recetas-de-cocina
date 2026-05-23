@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Practica Aplicaciones Web - Recetas</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="header-principal">
+        <div class="logo">
+            <h2>🍳 MiRecetaWeb</h2>
+        </div>
+        <div class="buscador">
+            <input type="text" id="search-input" placeholder="Buscar receta o ingrediente...">
+        </div>
+        <div class="botones-header">
+            <select id="language-select" class="btn-gris">
+                <option value="es">🇪🇸 ES</option>
+                <option value="en">🇬🇧 EN</option>
+            </select>
+            
+            <button id="btn-nueva-receta" class="btn-naranja">Subir Receta</button>
+            <button id="theme-toggle" class="btn-gris">🌙 Modo Oscuro</button>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        
+        <nav class="menu-categorias">
+            <button class="btn-cat activo" data-category="all">Todos</button>
+            <button class="btn-cat" data-category="pasta">Pasta</button>
+            <button class="btn-cat" data-category="postres">Postres</button>
+            <button class="btn-cat" data-category="ensaladas">Ensaladas</button>
+            <button class="btn-cat" data-category="top-likes">🔥 Más Votadas</button>
+        </nav>
+
+        <section id="recipes-container" class="rejilla-recetas">
+            
+            <article class="tarjeta-receta" data-id="1">
+                <div class="imagen-receta">
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500" alt="Plato de pasta">
+                    <span class="etiqueta">Pasta</span>
+                </div>
+                <div class="info-receta">
+                    <h3>Espaguetis Carbonara</h3>
+                    
+                    <div class="info-nutricion">
+                        <span>🔥 650 kcal</span>
+                        <span>💪 25g Prot</span>
+                    </div>
+
+                    <div class="pie-tarjeta">
+                        <button class="btn-like">❤️ <span class="likes-count">12</span></button>
+                        <button class="btn-ver">Ver Receta</button>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+    </main>
+
+    <div id="recipe-modal" class="ventana-modal "> <div class="contenido-modal">
+            <button class="cerrar-modal" id="close-recipe-modal">&times;</button>
+            
+            <div class="layout-modal">
+                <div class="columna-izq">
+                    <img id="modal-recipe-img" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500" alt="Receta">
+                    
+                    <div class="tabla-nutricion">
+                        <h4>Información Nutricional (Por ración)</h4>
+                        <div class="grid-nutricion">
+                            <div><strong>Calorías:</strong> <span id="nut-cal">650 kcal</span></div>
+                            <div><strong>Carbohidratos:</strong> <span id="nut-carbs">70g</span></div>
+                            <div><strong>Proteínas:</strong> <span id="nut-protein">25g</span></div>
+                            <div><strong>Grasas:</strong> <span id="nut-fat">22g</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="columna-der">
+                    <h2 id="modal-recipe-title">Espaguetis Carbonara</h2>
+                    
+                    <h3>Ingredientes</h3>
+                    <ul id="modal-ingredients-list">
+                        <li>400g de espaguetis</li>
+                        <li>200g de guanciale</li>
+                        <li>4 huevos enteros</li>
+                    </ul>
+
+                    <h3>Pasos a seguir</h3>
+                    <ol id="modal-instructions-list">
+                        <li>Hervir la pasta en abundante agua con sal.</li>
+                        <li>Dorar el guanciale en una sartén caliente sin aceite.</li>
+                    </ol>
+
+                    <div class="seccion-comentarios">
+                        <h3>Comentarios de usuarios</h3>
+                        <div id="comments-container" class="lista-comentarios">
+                            <div class="un-comentario">
+                                <strong>@EstudianteUAB:</strong> <p>Buenísima receta, nos funcionó genial para la cena.</p>
+                            </div>
+                        </div>
+                        <form id="comment-form" class="form-comentario">
+                            <input type="text" id="comment-user" placeholder="Tu nombre..." required>
+                            <textarea id="comment-text" placeholder="Escribe un comentario..." required></textarea>
+                            <button type="submit" class="btn-naranja">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="form-modal" class="ventana-modal">
+        <div class="contenido-modal ancho-formulario">
+            <button class="cerrar-modal" id="close-form-modal">&times;</button>
+            <h2>Añadir Nueva Receta</h2>
+            
+            <form id="new-recipe-form">
+                <div class="grupo-form">
+                    <label>Nombre del plato *</label>
+                    <input type="text" id="form-title" required>
+                </div>
+
+                <div class="fila-form">
+                    <div class="grupo-form">
+                        <label>Categoría *</label>
+                        <select id="form-category" required>
+                            <option value="pasta">Pasta</option>
+                            <option value="postres">Postres</option>
+                            <option value="ensaladas">Ensaladas</option>
+                        </select>
+                    </div>
+                    <div class="grupo-form">
+                        <label>URL de la Imagen</label>
+                        <input type="url" id="form-img" placeholder="http://...">
+                    </div>
+                </div>
+
+                <div class="fila-form">
+                    <div class="grupo-form"><label>Calorías</label><input type="number" id="form-cal"></div>
+                    <div class="grupo-form"><label>Proteínas</label><input type="number" id="form-protein"></div>
+                    <div class="grupo-form"><label>Carbos</label><input type="number" id="form-carbs"></div>
+                    <div class="grupo-form"><label>Grasas</label><input type="number" id="form-fat"></div>
+                </div>
+
+                <div class="grupo-form">
+                    <label>Ingredientes (separados por comas) *</label>
+                    <textarea id="form-ingredients" required placeholder="Ej. harina, huevos, leche"></textarea>
+                </div>
+
+                <div class="grupo-form">
+                    <label>Instrucciones (una por línea) *</label>
+                    <textarea id="form-instructions" rows="4" required placeholder="Ej. Mezclar los ingredientes&#10;Cocinar a fuego medio"></textarea>
+                </div>
+
+                <button type="submit" class="btn-naranja btn-bloque">Guardar Receta en Sistema</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+
+
