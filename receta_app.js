@@ -25,7 +25,6 @@ const recetasIniciales = [
             "Sazona con sal y pimienta al gusto. Sirve inmediatamente."
         ]
     },
-
     {
         id: 2,
         titulo: "Tacos de Carnitas",
@@ -72,47 +71,36 @@ const recetasIniciales = [
             "Añade el aderezo César al gusto y mezcla bien. Sirve inmediatamente."
         ]
     }
-]
+];
 
-//Al inicio, es verdad que no habrá ninguna receta guardada al navegador, pero para cuando si hay y se ejecuta otra vez, hay que comprobar si ya hay o no recetas guardadas, para no sobreescribirlas cada vez que se ejecute el código. Por eso, vamos a comprobar si ya hay recetas guardadas en el localStorage, y si no las hay, entonces guardamos las recetas iniciales.
+// Comprobamos si ya hay recetas guardadas en el localStorage para no sobrescribirlas
 if (!localStorage.getItem('recetas')) {
     localStorage.setItem('recetas', JSON.stringify(recetasIniciales));
 }
 
-//-----VARIABLAS GLOBALES-----
-//Cargamos las recetas del LocalStorage, si no hay ninguna receta guardada, se inicializa como un array vacío. Esto permite que la aplicación funcione correctamente incluso si el usuario no ha agregado ninguna receta todavía.
-let listaRecetas = JSON.parse(localStorage.getItem('recetas'));
-//El filtro de búsqueda se inicializa con el valor 'all', lo que significa que al inicio se mostrarán todas las recetas sin aplicar ningún filtro. Cuando el usuario seleccione una categoría específica para filtrar las recetas, esta variable se actualizará con el valor de esa categoría, y la aplicación mostrará solo las recetas que pertenezcan a esa categoría.
+//-----VARIABLES GLOBALES-----
+let listaRecetas = JSON.parse(localStorage.getItem('recetas')) || [];
 let filtroCategoria = 'all';
-//No hay ninguna receta seleccionada al inicio, por lo que esta variable se inicializa como null. Cuando el usuario seleccione una receta para ver sus detalles, esta variable se actualizará con la información de esa receta.
 let recetaSeleccionada = null;
 
-//Es el contenedor donde se mostrarán las recetas en la página. 
 const contenedorRecetas = document.getElementById('recipes-container');
 
-
 //----MOSTRAR RECETAS-----
-
 function mostrarRecetas(lista) {
-    //Limpiamos el contenedor de recetas antes de mostrar las nuevas recetas filtradas. Esto asegura que solo se muestren las recetas que cumplen con el filtro seleccionado
     contenedorRecetas.innerHTML = '';
 
-    //Si la lista es vacía, mostramos un mensaje indicando que no se encontraron recetas.
     if (lista.length === 0) {
         contenedorRecetas.innerHTML = '<p style="text-align:center; padding:40px;">No se encontraron recetas.</p>';
         return;
     }
 
-    //Recorremos cada receta
-    for (var i = 0; i < lista.length; i++) {
-        var receta = lista[i];
+    
+    for (let i = 0; i < lista.length; i++) {
+        const receta = lista[i];
 
-        // Creamos el elemento article para la tarjeta (usamos article igual que en el HTML original)
-        var tarjeta = document.createElement('article');
+        const tarjeta = document.createElement('article');
         tarjeta.classList.add('tarjeta-receta');
 
-        // Dentro de cada tarjeta, añadimos la imagen, etiqueta, título, nutrición y botón ver receta
-        // Igual que la estructura que había en el HTML original
         tarjeta.innerHTML =
             '<div class="imagen-receta">' +
                 '<img src="' + receta.imagen + '" alt="' + receta.titulo + '" onerror="this.src=\'https://placehold.co/400x300?text=Sin+Imagen\'">' +
@@ -133,67 +121,54 @@ function mostrarRecetas(lista) {
     }
 }
 
-
 //----BUSCADOR DE RECETAS-----
-//ada vez que el usuario escribe, filtramos las recetas
 document.getElementById('search-input').addEventListener('input', function() {
- 
-    var textoBuscado = this.value.toLowerCase();
+    const textoBuscado = this.value.toLowerCase();
+    const resultado = [];
 
-    // Creamos un array vacío donde iremos metiendo las recetas que coincidan
-    var resultado = [];
+    
+    for (let i = 0; i < listaRecetas.length; i++) {
+        const receta = listaRecetas[i];
+        const coincideTitulo = receta.titulo.toLowerCase().includes(textoBuscado);
+        let coincideIngrediente = false;
 
-    for (var i = 0; i < listaRecetas.length; i++) {
-        var receta = listaRecetas[i];
-
-        // Comprobamos si el título contiene el texto buscado
-        var coincideTitulo = receta.titulo.toLowerCase().includes(textoBuscado);
-
-        // Comprobamos si algún ingrediente contiene el texto buscado
-        var coincideIngrediente = false;
-        for (var j = 0; j < receta.ingredientes.length; j++) {
+        for (let j = 0; j < receta.ingredientes.length; j++) {
             if (receta.ingredientes[j].toLowerCase().includes(textoBuscado)) {
                 coincideIngrediente = true;
             }
         }
 
-        // Si coincide en título O en ingredientes, la añadimos al resultado
         if (coincideTitulo || coincideIngrediente) {
             resultado.push(receta);
         }
     }
 
-    // Aplicamos también el filtro de categoría activo
     mostrarRecetas(filtrarPorCategoria(resultado));
 });
 
 //----FILTRO DE CATEGORÍA-----
-var botonesCat = document.querySelectorAll('.btn-cat');
+const botonesCat = document.querySelectorAll('.btn-cat');
 
-for (var i = 0; i < botonesCat.length; i++) {
+
+for (let i = 0; i < botonesCat.length; i++) {
     botonesCat[i].addEventListener('click', function() {
 
-        // Quitamos 'activo' de todos los botones
-        for (var j = 0; j < botonesCat.length; j++) {
+        for (let j = 0; j < botonesCat.length; j++) {
             botonesCat[j].classList.remove('activo');
         }
 
-        // Se lo añadimos al botón pulsado
         this.classList.add('activo');
-
-        // Guardamos qué categoría se ha seleccionado
         filtroCategoria = this.getAttribute('data-category');
 
-        // Volvemos a filtrar teniendo en cuenta también el buscador
-        var textoBuscado = document.getElementById('search-input').value.toLowerCase();
-        var resultado = [];
+        const textoBuscado = document.getElementById('search-input').value.toLowerCase();
+        const resultado = [];
 
-        for (var k = 0; k < listaRecetas.length; k++) {
-            var receta = listaRecetas[k];
-            var coincideTitulo = receta.titulo.toLowerCase().includes(textoBuscado);
-            var coincideIngrediente = false;
+        for (let k = 0; k < listaRecetas.length; k++) {
+            const receta = listaRecetas[k];
+            const coincideTitulo = receta.titulo.toLowerCase().includes(textoBuscado);
+            let coincideIngrediente = false;
 
-            for (var m = 0; m < receta.ingredientes.length; m++) {
+            for (let m = 0; m < receta.ingredientes.length; m++) {
                 if (receta.ingredientes[m].toLowerCase().includes(textoBuscado)) {
                     coincideIngrediente = true;
                 }
@@ -208,14 +183,14 @@ for (var i = 0; i < botonesCat.length; i++) {
     });
 }
 
-// Función que devuelve solo las recetas de la categoría activa
 function filtrarPorCategoria(lista) {
     if (filtroCategoria === 'all') {
         return lista;
     }
 
-    var resultado = [];
-    for (var i = 0; i < lista.length; i++) {
+    const resultado = [];
+  
+    for (let i = 0; i < lista.length; i++) {
         if (lista[i].categoria === filtroCategoria) {
             resultado.push(lista[i]);
         }
@@ -224,53 +199,51 @@ function filtrarPorCategoria(lista) {
 }
 
 //----MODAL DE DETALLES DE RECETA-----
-//El HTML de las tarjetas llama a abrirModal(id) al hacer click en "ver recta" para mirar los en detalle
-var modalReceta = document.getElementById('recipe-modal');
+const modalReceta = document.getElementById('recipe-modal');
 
 function abrirModal(idReceta) {
-    // Buscamos la receta que coincide con el id que se ha pasado
-    recetaSeleccionado = null;
-    for (var i = 0; i < listaRecetas.length; i++) {
+    recetaSeleccionada = null;
+    
+   
+    for (let i = 0; i < listaRecetas.length; i++) {
         if (listaRecetas[i].id === idReceta) {
             recetaSeleccionada = listaRecetas[i];
         }
     }
     
-    // Si no se encuentra la receta, salimos de la función
     if (!recetaSeleccionada) {
         alert('Receta no encontrada');
         return;
     }
 
-    //Rellenamos el contenido del modal con la información de la receta seleccionada
     document.getElementById('modal-recipe-img').src = recetaSeleccionada.imagen;
     document.getElementById('modal-recipe-title').textContent = recetaSeleccionada.titulo;
     document.getElementById('nut-cal').textContent = recetaSeleccionada.calorias + ' kcal'; 
     document.getElementById('nut-carbs').textContent = recetaSeleccionada.carbohidratos + 'g';
     document.getElementById('nut-protein').textContent = recetaSeleccionada.proteinas + 'g';
     document.getElementById('nut-fat').textContent = recetaSeleccionada.grasas + 'g';
-   // Rellenamos los ingredientes  creando elementos li por cada uno
-    var ingredientesList = document.getElementById('modal-ingredients-list');
+
+    const ingredientesList = document.getElementById('modal-ingredients-list');
     ingredientesList.innerHTML = '';
-    for (var j = 0; j < recetaSeleccionada.ingredientes.length; j++) {
-        var li = document.createElement('li');
-        li.textContent = recetaSeleccionada.ingredientes[j]; // Creamos un elemento de lista para cada ingrediente y le asignamos el texto del ingrediente correspondiente
-        ingredientesList.appendChild(li); // Añadimos cada ingrediente a la lista del modal
+   
+    for (let j = 0; j < recetaSeleccionada.ingredientes.length; j++) {
+        const li = document.createElement('li');
+        li.textContent = recetaSeleccionada.ingredientes[j];
+        ingredientesList.appendChild(li);
     }
-    // Rellenamos las instrucciones creando elementos li por cada uno
-    var listaInstrucciones = document.getElementById('modal-instructions-list');
+
+    const listaInstrucciones = document.getElementById('modal-instructions-list');
     listaInstrucciones.innerHTML = '';
-    for (var i = 0; i < recetaSeleccionada.instrucciones.length; i++) {
-        var li = document.createElement('li');
+    
+    for (let i = 0; i < recetaSeleccionada.instrucciones.length; i++) {
+        const li = document.createElement('li');
         li.textContent = recetaSeleccionada.instrucciones[i];
         listaInstrucciones.appendChild(li);
     }
 
-    // Abrimos el modal (el CSS lo hace visible al añadir la clase 'abierto')
     modalReceta.classList.add('abierto');
-    document.body.style.overflow = 'hidden'; // Bloqueamos el scroll del fondo
+    document.body.style.overflow = 'hidden';
 }
-// Función para cerrar el modal, que se llama tanto al hacer click en el botón de cerrar como al hacer click en el fondo oscuro del modal
 
 function cerrarModal() {
     modalReceta.classList.remove('abierto');
@@ -278,74 +251,62 @@ function cerrarModal() {
     recetaSeleccionada = null;
 }
 
-// Botón X para cerrar el modal
 document.getElementById('close-recipe-modal').addEventListener('click', cerrarModal);
 
-// Si el usuario hace click en el fondo oscuro, también cerramos
 modalReceta.addEventListener('click', function(evento) {
     if (evento.target === modalReceta) {
         cerrarModal();
     }
 });
 
-
 //---FORMULARIO PARA AÑADIR NUEVAS RECETAS-----
-var modalFormulario = document.getElementById('form-modal');
-var btnAbrirFormulario = document.getElementById('btn-nueva-receta');
-var btnCerrarFormulario = document.getElementById('close-form-modal');
-var formularioNuevo = document.getElementById('new-recipe-form');
+const modalFormulario = document.getElementById('form-modal');
+const btnAbrirFormulario = document.getElementById('btn-nueva-receta');
+const btnCerrarFormulario = document.getElementById('close-form-modal');
+const formularioNuevo = document.getElementById('new-recipe-form');
 
-// Al hacer click en el botón de "Nueva Receta", se muestra el formulario modal para añadir una nueva receta.
 btnAbrirFormulario.addEventListener('click', function() {
     modalFormulario.classList.add('abierto');
-    document.body.style.overflow = 'hidden'; // Evita que el fondo se desplace cuando el modal está abierto
+    document.body.style.overflow = 'hidden';
 });
 
-// Al hacer click en el botón de cerrar del formulario modal, se oculta el formulario
 btnCerrarFormulario.addEventListener('click', function() {
     modalFormulario.classList.remove('abierto');
     document.body.style.overflow = ''; 
 });
 
-// Al enviar el formulario para añadir una nueva receta, se procesa la información ingresada por el usuario, se crea un nuevo objeto de receta con esa información, se añade a la lista de recetas, se guarda en el localStorage y se actualiza la visualización de las recetas en la página.
 modalFormulario.addEventListener('click', function(evento) {
     if (evento.target === modalFormulario) {
         modalFormulario.classList.remove('abierto');
-        document.body.style.overflow = ''; // Evita que el fondo se desplace cuando el modal está cerrado
+        document.body.style.overflow = '';
     }
 });
 
 formularioNuevo.addEventListener('submit', function(evento) {
-    // Evitamos que la pagina se recargue al enviar el formulario
     evento.preventDefault();
 
-    // Recogemos los valores de cada campo
-    var titulo = document.getElementById('form-title').value;
-    var categoria = document.getElementById('form-category').value;
-    var imagen = document.getElementById('form-img').value;
-    var calorias = parseInt(document.getElementById('form-cal').value) || 0;
-    var proteinas = parseInt(document.getElementById('form-protein').value) || 0;
-    var carbohidratos = parseInt(document.getElementById('form-carbs').value) || 0;
-    var grasas = parseInt(document.getElementById('form-fat').value) || 0;
+    
+    const titulo = document.getElementById('form-title').value;
+    const categorySel = document.getElementById('form-category').value;
+    const imagen = document.getElementById('form-img').value;
+    const calorias = parseInt(document.getElementById('form-cal').value) || 0;
+    const proteinas = parseInt(document.getElementById('form-protein').value) || 0;
+    const carbohidratos = parseInt(document.getElementById('form-carbs').value) || 0;
+    const grasas = parseInt(document.getElementById('form-fat').value) || 0;
 
-    // Los ingredientes los separaremos por coma
-    var ingredientes = document.getElementById('form-ingredients').value.split(',');
+    const ingredientes = document.getElementById('form-ingredients').value.split(',');
+    const instrucciones = document.getElementById('form-instructions').value.split('\n');
 
-    //Las insstrucciones los separaremos por salto de linea
-    var instrucciones = document.getElementById('form-instructions').value.split('\n');
-
-    //Comprobamos que el título y la categoría no estén vacíos, ya que son campos obligatorios para crear una receta. Si alguno de estos campos está vacío, se muestra una alerta al usuario indicando que debe completar esos campos antes de poder añadir la receta.
-    if (titulo.trim() === '' || categoria.trim() === '') { // trim() elimina los espacios en blanco al inicio y al final del texto, para asegurarnos de que el usuario no ingrese solo espacios en blanco como título o categoría.
+    if (titulo.trim() === '' || categorySel.trim() === '') {
         alert('Por favor, completa el título y la categoría de la receta.');
         return;
     }
 
-    //Creamos un objeto con la información de la nueva receta, asignándole un ID único basado en date.now() porque genera un numero unico cada vez
-    var nuevaReceta = {
+    const nuevaReceta = {
         id: Date.now(),
         titulo: titulo,
-        categoria: categoria,
-        imagen: imagen || 'https://via.placeholder.com/500x300?text=Sin+Imagen', // Si no se proporciona una URL de imagen, se asigna una imagen por defecto.
+        categoria: categorySel,
+        imagen: imagen || 'https://placehold.co/500x300?text=Sin+Imagen',
         calorias: calorias,
         proteinas: proteinas,
         carbohidratos: carbohidratos,
@@ -354,48 +315,45 @@ formularioNuevo.addEventListener('submit', function(evento) {
         instrucciones: instrucciones,
     };
 
-    //Añadimos la recera en el array y lo guardamos en el LocalStorage
     listaRecetas.push(nuevaReceta);
     localStorage.setItem('recetas', JSON.stringify(listaRecetas));
 
-    //Actualizamos la pantalla para que se vea la nueva receta y cerramos el modal
     mostrarRecetas(filtrarPorCategoria(listaRecetas));
     modalFormulario.classList.remove('abierto');
-    document.body.style.overflow = 'hidden';
-    formularioNuevo.reset(); // Limpiamos el formulario para la próxima vez que se abra
+    document.body.style.overflow = '';
+    formularioNuevo.reset();
 
-    alert('¡Receta añadida con éxito!'); // Mostramos una alerta para confirmar que la receta se ha añadido correctamente
+    alert('¡Receta añadida con éxito!');
 });
 
-
 //----MODO OSCURO-----
-var botonModo = document.getElementById('theme-toggle');
-//Al hacer click en el botón de modo, se cambia el tema de la página y se guarda la preferencia en localStorage
+const botonModo = document.getElementById('theme-toggle');
+
 botonModo.addEventListener("click", function() {
-    const esOscuro = document.body.classList.toggle("dark-mode");//toggle añade la clase si no está, y la quita si ya está
+    const esOscuro = document.body.classList.toggle("dark-mode");
     
     if (esOscuro) {
          botonModo.textContent = '☀️ Modo Claro';
         localStorage.setItem('modo', 'oscuro');
     } else {
-       botonModo.textContent = '🌙 Modo Oscuro';
+        botonModo.textContent = '🌙 Modo Oscuro';
         localStorage.setItem('modo', 'claro');
     }
 });
 
-//Al cargar la página, se comprueba si hay una preferencia de modo guardada en localStorage y se aplica el tema correspondiente
 function cargarModoPantalla() {
     if (localStorage.getItem("modo") === "oscuro") {
         document.body.classList.add("dark-mode");
-        botonModo.textContent="☀️ Modo Claro"
+        botonModo.textContent="☀️ Modo Claro";
     } else {
         document.body.classList.remove("dark-mode");
-        botonModo.textContent="🌙 Modo Oscuro"
+        botonModo.textContent="🌙 Modo Oscuro";
     }
 }
 
 //------ARRANQUE PRINCIPAL DE LA APLICACIÓN-----
 cargarModoPantalla();
 mostrarRecetas(listaRecetas);
+
 
 
