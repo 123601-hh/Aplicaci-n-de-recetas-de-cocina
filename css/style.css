@@ -1,6 +1,6 @@
-/* 
+/* ==========================================================================
    VARIABLES PARA EL MODO CLARO/OSCURO (Soporte dinamico nativo)
-   */
+   ========================================================================== */
 :root {
     --color-fondo: #f5f7fa;
     --color-tarjeta: #ffffff;
@@ -41,9 +41,9 @@ body {
     padding: 20px;
 }
 
-/* 
+/* ==========================================================================
    HEADER PRINCIPAL (Estructurado con Flexbox)
-   */
+   ========================================================================== */
 .header-principal {
     display: flex;
     justify-content: space-between;
@@ -100,9 +100,9 @@ body {
     cursor: pointer;
 }
 
-/* 
+/* ==========================================================================
    MENÚ DE CATEGORÍAS (Flexbox Layout)
-   */
+   ========================================================================== */
 .menu-categorias {
     display: flex;
     justify-content: center;
@@ -126,9 +126,9 @@ body {
     color: white;
 }
 
-/* 
+/* ==========================================================================
    REJILLA DE PRODUCTOS (CSS Grid Layout - Obligatorio en la Rubrica)
-   */
+   ========================================================================== */
 .rejilla-recetas {
     display: grid;
     /* auto-fill gestiona el responsive de forma automatica segun el ancho del viewport */
@@ -183,18 +183,12 @@ body {
     margin: 10px 0;
 }
 
+/* Corregido: Alineacion limpia a la derecha tras quitar el boton de like */
 .pie-tarjeta {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 15px;
-}
-
-.btn-like {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--color-texto);
 }
 
 .btn-ver {
@@ -210,11 +204,11 @@ body {
     color: white;
 }
 
-/* 
+/* ==========================================================================
    VENTANAS MODALES (Soporte para interacciones dinamicas)
-  */
+   ========================================================================== */
 .ventana-modal {
-    display: none; /* Por defecto esta en 'none', cambia temporalmente a 'flex' para ver el diseño */
+    display: none; 
     position: fixed;
     top: 0;
     left: 0;
@@ -306,43 +300,9 @@ body {
     font-size: 14px;
 }
 
-/* Modulo de comentarios guardados en localStorage */
-.seccion-comentarios {
-    margin-top: 25px;
-}
-
-.lista-comentarios {
-    background-color: var(--color-fondo);
-    padding: 10px;
-    border-radius: 6px;
-    max-height: 120px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-}
-
-.un-comentario {
-    font-size: 12px;
-    padding: 4px 0;
-    border-bottom: 1px solid var(--color-gris-claro);
-}
-
-.form-comentario {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.form-comentario input, .form-comentario textarea {
-    padding: 6px;
-    border: 1px solid var(--color-gris-claro);
-    border-radius: 4px;
-    background-color: var(--color-fondo);
-    color: var(--color-texto);
-}
-
-/* 
+/* ==========================================================================
    FORMULARIO DE ENTRADA DE DATOS (Creacion de nuevas recetas)
-    */
+   ========================================================================== */
 .grupo-form {
     display: flex;
     flex-direction: column;
@@ -359,12 +319,22 @@ body {
     flex: 1;
 }
 
+/* SOLUCIÓN AL BUG DE GRASAS: Rejilla especifica para alinear los 4 campos nutricionales sin romper el layout */
+.fila-form-nutricion {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
 input, select, textarea {
     padding: 8px;
     border-radius: 5px;
     border: 1px solid var(--color-gris-claro);
     background-color: var(--color-fondo);
     color: var(--color-texto);
+    width: 100%; /* Asegura que el input rellene su celda asignada */
 }
 
 .btn-bloque {
@@ -372,9 +342,9 @@ input, select, textarea {
     margin-top: 10px;
 }
 
-/* 
+/* ==========================================================================
    DISEÑO RESPONSIVO (Media queries para adaptabilidad movil obligatoria)
-   */
+   ========================================================================== */
 @media (max-width: 700px) {
     .header-principal {
         flex-direction: column;
@@ -388,6 +358,11 @@ input, select, textarea {
 
     .layout-modal {
         flex-direction: column; /* Cambia a flujo vertical en pantallas moviles */
+    }
+
+    /* Colapsa los 4 campos de nutricion a un formato de 2x2 en pantallas muy pequeñas */
+    .fila-form-nutricion {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 

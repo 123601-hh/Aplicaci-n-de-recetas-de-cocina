@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <!-- Barra de navegación superior -->
     <header class="header-principal">
         <div class="logo">
             <h2>🍳 MiRecetaWeb</h2>
@@ -16,28 +17,29 @@
             <input type="text" id="search-input" placeholder="Buscar receta o ingrediente...">
         </div>
         <div class="botones-header">
+            <!-- Eliminado el idioma EN a petición de Aban; dejamos solo ES fijo -->
             <select id="language-select" class="btn-gris">
                 <option value="es">🇪🇸 ES</option>
-                <option value="en">🇬🇧 EN</option>
             </select>
-            
+                        
             <button id="btn-nueva-receta" class="btn-naranja">Subir Receta</button>
             <button id="theme-toggle" class="btn-gris">🌙 Modo Oscuro</button>
         </div>
     </header>
 
+    <!-- Contenedor principal de la página -->
     <main class="contenedor">
-        
+        <!-- Menú de categorías (Eliminado el botón de 'Más Votadas') -->
         <nav class="menu-categorias">
             <button class="btn-cat activo" data-category="all">Todos</button>
             <button class="btn-cat" data-category="pasta">Pasta</button>
             <button class="btn-cat" data-category="postres">Postres</button>
             <button class="btn-cat" data-category="ensaladas">Ensaladas</button>
-            <button class="btn-cat" data-category="top-likes">🔥 Más Votadas</button>
         </nav>
 
+        <!-- Rejilla de recetas (CSS Grid) -->
         <section id="recipes-container" class="rejilla-recetas">
-            
+            <!-- Tarjeta base (Eliminado el botón de Like / Corazón) -->
             <article class="tarjeta-receta" data-id="1">
                 <div class="imagen-receta">
                     <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500" alt="Plato de pasta">
@@ -45,29 +47,31 @@
                 </div>
                 <div class="info-receta">
                     <h3>Espaguetis Carbonara</h3>
-                    
+                                        
                     <div class="info-nutricion">
                         <span>🔥 650 kcal</span>
                         <span>💪 25g Prot</span>
                     </div>
 
                     <div class="pie-tarjeta">
-                        <button class="btn-like">❤️ <span class="likes-count">12</span></button>
+                        <!-- Ahora solo queda el botón de ver, centrado o alineado correctamente -->
                         <button class="btn-ver">Ver Receta</button>
                     </div>
                 </div>
             </article>
-
         </section>
     </main>
 
-    <div id="recipe-modal" class="ventana-modal "> <div class="contenido-modal">
+    <!-- VENTANA MODAL: DETALLE DE RECETA (Aban la controla con JS) -->
+    <div id="recipe-modal" class="ventana-modal"> 
+        <div class="contenido-modal">
             <button class="cerrar-modal" id="close-recipe-modal">&times;</button>
-            
+                        
             <div class="layout-modal">
+                <!-- Columna Izquierda: Imagen y Tabla Nutricional -->
                 <div class="columna-izq">
                     <img id="modal-recipe-img" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500" alt="Receta">
-                    
+                                        
                     <div class="tabla-nutricion">
                         <h4>Información Nutricional (Por ración)</h4>
                         <div class="grid-nutricion">
@@ -79,9 +83,10 @@
                     </div>
                 </div>
 
+                <!-- Columna Derecha: Ingredientes y Pasos (Sección comentarios eliminada completamente) -->
                 <div class="columna-der">
                     <h2 id="modal-recipe-title">Espaguetis Carbonara</h2>
-                    
+                                        
                     <h3>Ingredientes</h3>
                     <ul id="modal-ingredients-list">
                         <li>400g de espaguetis</li>
@@ -94,30 +99,17 @@
                         <li>Hervir la pasta en abundante agua con sal.</li>
                         <li>Dorar el guanciale en una sartén caliente sin aceite.</li>
                     </ol>
-
-                    <div class="seccion-comentarios">
-                        <h3>Comentarios de usuarios</h3>
-                        <div id="comments-container" class="lista-comentarios">
-                            <div class="un-comentario">
-                                <strong>@EstudianteUAB:</strong> <p>Buenísima receta, nos funcionó genial para la cena.</p>
-                            </div>
-                        </div>
-                        <form id="comment-form" class="form-comentario">
-                            <input type="text" id="comment-user" placeholder="Tu nombre..." required>
-                            <textarea id="comment-text" placeholder="Escribe un comentario..." required></textarea>
-                            <button type="submit" class="btn-naranja">Enviar</button>
-                        </form>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- VENTANA MODAL: FORMULARIO PARA AÑADIR NUEVA RECETA -->
     <div id="form-modal" class="ventana-modal">
         <div class="contenido-modal ancho-formulario">
             <button class="cerrar-modal" id="close-form-modal">&times;</button>
             <h2>Añadir Nueva Receta</h2>
-            
+                        
             <form id="new-recipe-form">
                 <div class="grupo-form">
                     <label>Nombre del plato *</label>
@@ -139,7 +131,8 @@
                     </div>
                 </div>
 
-                <div class="fila-form">
+                <!-- Bloque de Nutrición de 4 campos corregido en el CSS para evitar desbordamiento horizontal -->
+                <div class="fila-form-nutricion">
                     <div class="grupo-form"><label>Calorías</label><input type="number" id="form-cal"></div>
                     <div class="grupo-form"><label>Proteínas</label><input type="number" id="form-protein"></div>
                     <div class="grupo-form"><label>Carbos</label><input type="number" id="form-carbs"></div>
@@ -161,8 +154,12 @@
         </div>
     </div>
 
+    <!-- Script programado por Aban -->
+    <script src="receta_app.js"></script>
 </body>
 </html>
+
+
 
 
 
